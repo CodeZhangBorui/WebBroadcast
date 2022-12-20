@@ -1,0 +1,28 @@
+{
+    "name": "web-broadcast",
+    "version": "1.0.0",
+    "description": "broadcast your screen to web lively",
+    "main": "./src/main.js",
+    "repository": "https://github.com/CodeZhangBorui/WebBroadcast.git",
+    "author": "HECODE",
+    "license": "MIT",
+    "type": "module",
+    "contributors": [{
+        "name": "bcmray_crazy",
+        "email": "bcmray@qq.com",
+        "url": "http://www.jerrymc.cn:930"
+    }],
+    "scripts": {
+        "test": "nodemon ./src/main.js",
+        "lint": "eslint src/* --fix --no-error-on-unmatched-pattern"
+    },
+    "devDependencies": {
+        "eslint": "^8.30.0",
+        "nodemon": "^2.0.20"
+    },
+    "dependencies": {
+        "chalk": "^5.2.0",
+        "express": "^4.18.2",
+        "socket.io": "^4.5.4"
+    }
+}

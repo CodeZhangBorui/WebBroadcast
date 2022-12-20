@@ -1,0 +1,28 @@
+import chalk from 'chalk';
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import path from 'path';
+import { getPageFilePath, __staticPath } from './lib/path.js';
+
+const app = express();
+const server = http.createServer(app);
+const port = 3000;
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+    console.log(chalk.grey('出现了新的连接'));
+    socket.on('auth', (payload) => {
+        console.log(payload);
+    });
+});
+
+
+app.use(express.static(__staticPath));
+app.get('/', (req, res) => {
+    res.sendFile(getPageFilePath('index'));
+});
+
+server.listen(port, () => {
+    console.log(chalk.cyan('App is listening on http://localhost:3000/'));
+});
