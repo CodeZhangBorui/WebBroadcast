@@ -7,5 +7,5 @@ export function getPath(p) {
     return path.join(__dirname, './src/', p);
 }
 export function getPageFilePath(pageName) {
-    return getPath('web/page/', pageName + '.html');
+    return getPath('web/page/' + pageName + '.html');
 }

@@ -16,6 +16,7 @@ io.on('connection', (socket) => {
     });
 });
 
+console.log(getPageFilePath('create'));
 
 app.use(express.static(__staticPath));
 app.get('/', (req, res) => {
@@ -27,7 +28,7 @@ app.get('/join', (req, res) => {
 app.get('/create', (req, res) => {
     res.sendFile(getPageFilePath('create'));
 });
-app.post('/b', (req, res) => {
+app.get('/b', (req, res) => {
     res.sendFile(getPageFilePath('broadcast'));
 });
 
