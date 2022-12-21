@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
-import path from 'path';
 import { getPageFilePath, __staticPath } from './lib/path.js';
 
 const app = express();
@@ -21,6 +20,15 @@ io.on('connection', (socket) => {
 app.use(express.static(__staticPath));
 app.get('/', (req, res) => {
     res.sendFile(getPageFilePath('index'));
+});
+app.get('/join', (req, res) => {
+    res.sendFile(getPageFilePath('join'));
+});
+app.get('/create', (req, res) => {
+    res.sendFile(getPageFilePath('create'));
+});
+app.post('/b', (req, res) => {
+    res.sendFile(getPageFilePath('broadcast'));
 });
 
 server.listen(port, () => {
