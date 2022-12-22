@@ -12,12 +12,14 @@ const io = new Server(server);
 /**
  * Record<bid:string, sockets:socket[]>
  */
-var rooms = {};
+var rooms = [];
 
 io.on('connection', (socket) => {
-    console.log(chalk.grey('出现了新的连接'));
+    console.log(chalk.grey('New connection found'));
 
     var isAuthed = false;
+
+    socket.emit('auth');
 
     socket.on('auth', (payload) => {
         /**
@@ -26,46 +28,53 @@ io.on('connection', (socket) => {
          * bid 广播id
          * name 加入者名称
          */
-        console.log(payload);
 
         if (!payload.type || !payload.bid || !payload.name) {
             socket.emit('err_auth');
             return;
         }
         if (isAuthed) return;
-        if (rooms[payload.bid]) {
-            socket.emit('room_using');
-            return;
+        if (payload.type == 'create') {
+            if (rooms.includes(payload.bid)) {
+                socket.emit('room_using');
+                return;
+            }
+            rooms.push(payload.bid);
         }
         if (payload.type == 'join' && !rooms.includes(payload.bid)) {
             socket.emit('room_not_found');
             return;
-        } else {
-            rooms[payload.bid] = [];
         }
+
+        socket.join(payload.bid);
+        socket.to(payload.bid).emit('user_join', payload.name);
+        socket.emit('user_join', payload.name);
 
         socket.on('data', (data) => {
             if (payload.type != 'create') return;
-            sendToRoom(payload.bid, 'data', {
-                data
-            });
+            socket.to(payload.bid).emit('data', data);
         });
         socket.on('chat', (msg) => {
-            sendToRoom(payload.bid, 'message', { msg, name: payload.name });
+            socket.to(payload.bid).emit('message', { msg, name: payload.name });
         });
         socket.on('ping', () => {
             socket.emit('pong', (new Date()).valueOf());
         });
         socket.on('disconnect', (reason) => {
-            var emitData = { reason, name: payload.name };
-            if (payload.type == 'create') emitData.quit = true;
+            console.log(chalk.grey(payload.name + ' disconnect'));
 
-            sendToRoom(payload.bid, 'user_leave', emitData);
+            var emitData = { reason, name: payload.name };
+            if (payload.type == 'create') {
+                emitData.quit = true;
+                delete rooms[rooms.indexOf(payload.bid)];
+            }
+
+            socket.to(payload.bid).emit('user_leave', emitData);
         });
+
+        socket.emit('authed');
     });
 });
-
-console.log(getPageFilePath('create'));
 
 app.use(express.static(__staticPath));
 app.get('/', (req, res) => {
@@ -84,7 +93,3 @@ app.get('/b', (req, res) => {
 server.listen(port, () => {
     console.log(chalk.cyan('App is listening on http://localhost:3000/'));
 });
-
-function sendToRoom(bid, event, ...args) {
-    rooms[bid].forEach(s => { s.emit(event, ...args); });
-}
