@@ -22,3 +22,9 @@ body {
     text-decoration: none;
     color: rgb(0, 170, 255);
 }
+
+div.fluentForm {
+    display: flex;
+    flex-direction: column;
+    width: min(300px, 100%);
+}

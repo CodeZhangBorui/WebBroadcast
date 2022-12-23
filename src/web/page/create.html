@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
     <title>Create a new web broadcast</title>
 </head>
 
@@ -16,15 +17,15 @@
         <input type="text" name="type" id="type" value="create" style="display: none;">
         <input type="submit" value="Create">
     </form>-->
-    <div>
+    <div class="fluentForm">
         <fluent-text-field appearance="outline" placeholder="Your name" id="name">Your name</fluent-text-field>
         <fluent-text-field appearance="outline" placeholder="Broadcast ID" id="bid">Broadcast ID</fluent-text-field>
         <fluent-button appearance="accent" id="sub">Create</fluent-button>
     </div>
     <script>
         document.getElementById('sub').addEventListener("click", function() {
-            name = document.getElementById('name').value;
-            bid = document.getElementById('bid').value;
+            name = document.querySelector("#name").value;
+            bid = document.querySelector("#bid").value;
             window.location = `http://localhost:3000/b?name=${name}&bid=${bid}&type=create`;
         })
     </script>

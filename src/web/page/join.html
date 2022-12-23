@@ -5,17 +5,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
     <title>Join a web broadcast</title>
 </head>
 
 <body>
     <h1>Join a web broadcast</h1>
-    <form action="/b" method="get">
+    <!--<form action="/b" method="get">
         <input type="text" name="name" id="name" placeholder="Your name">
         <input type="text" name="bid" id="bid" placeholder="Broadcast id">
         <input type="text" name="type" id="type" value="join" style="display: none;">
         <input type="submit" value="Join">
-    </form>
+    </form>-->
+    <div class="fluentForm">
+        <fluent-text-field appearance="outline" placeholder="Your name" id="name">Your name</fluent-text-field>
+        <fluent-text-field appearance="outline" placeholder="Broadcast ID" id="bid">Broadcast ID</fluent-text-field>
+        <fluent-button appearance="accent" id="sub">Create</fluent-button>
+    </div>
+    <script>
+        document.getElementById('sub').addEventListener("click", function() {
+            name = document.querySelector("#name").value;
+            bid = document.querySelector("#bid").value;
+            window.location = `http://localhost:3000/b?name=${name}&bid=${bid}&type=join`;
+        })
+    </script>
+    <script type="module">
+        import { allComponents, provideFluentDesignSystem } from 'https://unpkg.com/@fluentui/web-components';
+        provideFluentDesignSystem().register(allComponents);
+    </script>
 </body>
 
 </html>

@@ -16,8 +16,10 @@
         </div>
     </div>
     <div class="chat-wrapper">
-        <input placeholder="Chat here" name="chat" id="chat">
-        <button onclick="sendMsg()">Send</button>
+        <!--<input placeholder="Chat here" name="chat" id="chat">
+        <button onclick="sendMsg()">Send</button>-->
+        <fluent-text-field appearance="outline" placeholder="Chat here" id="chat"></fluent-text-field>
+        <fluent-button appearance="accent" onclick="sendMsg()">Send</fluent-button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -86,6 +88,10 @@
         }
     </script>
     <link rel="stylesheet" href="broadcast.css">
+    <script type="module">
+        import { allComponents, provideFluentDesignSystem } from 'https://unpkg.com/@fluentui/web-components';
+        provideFluentDesignSystem().register(allComponents);
+    </script>
 </body>
 
 </html>
