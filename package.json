@@ -7,11 +7,13 @@
     "author": "HECODE",
     "license": "MIT",
     "type": "module",
-    "contributors": [{
-        "name": "bcmray_crazy",
-        "email": "bcmray@qq.com",
-        "url": "http://www.jerrymc.cn:930"
-    }],
+    "contributors": [
+        {
+            "name": "bcmray_crazy",
+            "email": "bcmray@qq.com",
+            "url": "http://www.jerrymc.cn:930"
+        }
+    ],
     "scripts": {
         "test": "nodemon ./src/main.js",
         "lint": "eslint src/* --fix --no-error-on-unmatched-pattern"
@@ -21,6 +23,7 @@
         "nodemon": "^2.0.20"
     },
     "dependencies": {
+        "@fluentui/web-components": "^2.5.8",
         "chalk": "^5.2.0",
         "express": "^4.18.2",
         "socket.io": "^4.5.4"
