@@ -26,6 +26,7 @@ async function start() {
     this.mime = MediaRecorder.isTypeSupported("video/webm; codecs=vp9") ? "video/webm; codecs=vp9" : "video/webm";
     this.scrRecorder = new MediaRecorder(this.stream, {mimeType:this.mime});
     this.scrRecorder.addEventListener("dataavailable", function(e) {
+        // Could not transfer "this" into the function!
         this.replayData.push(e.data);
         this.chunkQueue.push_back(e.data);
         if(chunkQueue.length > this.chunkCacheLength) {
