@@ -6,13 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web broadcast</title>
-    <script src="queue.js"></script>
     <script src="broadcast.js"></script>
 </head>
 
 <body>
     <div class="flex">
-        <div class="broadcast-wrapper"></div>
+        <div class="broadcast-wrapper">
+            <img src="" alt="" id="broadcast">
+        </div>
         <div class="msg-wrapper">
             <ul id="msg"></ul>
         </div>
@@ -34,12 +35,18 @@
         })
         if (!params.type || !params.bid || !params.name) window.location.pathname = '/';
 
+        function start() {
+            var broadcast = new Broadcast();
+            document.getElementById('broadcast').srcObject = broadcast.stream;
+        }
+
         socket.on("auth", () => {
             socket.emit("auth", {
                 type: params.type,
                 bid: params.bid,
                 name: params.name
             });
+            start();
         })
 
         socket.on("err_auth", () => {
@@ -91,8 +98,7 @@
     </script>
     <link rel="stylesheet" href="broadcast.css">
     <script type="module">
-        import { allComponents, provideFluentDesignSystem } from 'https://unpkg.com/@fluentui/web-components';
-        provideFluentDesignSystem().register(allComponents);
+        import { allComponents, provideFluentDesignSystem } from 'https://unpkg.com/@fluentui/web-components'; provideFluentDesignSystem().register(allComponents);
     </script>
 </body>
 

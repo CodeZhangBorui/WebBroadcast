@@ -11,7 +11,7 @@ function Queue() {
 
 //向队末尾添加一个元素
 function push_back(element) {
-    this.dataStore.push(element)
+    this.dataStore.push(element);
 }
 
 //删除队首的元素
@@ -23,16 +23,16 @@ function front() { //读取队首的元素
     return this.dataStore[0];
 }
 function back() { ////读取队末的元素
-    return this.dataStore[this.dataStore.length - 1]
+    return this.dataStore[this.dataStore.length - 1];
 }
 
 //显示队列内的所有元素
 function toString() {
-    var retStr = "";
+    var retStr = '';
     for (var i = 0; i < this.dataStore.length; ++i ) {
-        retStr += this.dataStore[i] + "\n";
+        retStr += this.dataStore[i] + '\n';
     }
-    return retStr
+    return retStr;
 }
 
 //队列是否为空
