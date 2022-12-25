@@ -6,14 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web broadcast</title>
-    <script src="broadcast.js"></script>
+    <!-- <script src="broadcast.js"></script> -->
 </head>
 
 <body>
     <div class="flex">
-        <div class="broadcast-wrapper">
-            <img src="" alt="" id="broadcast">
-        </div>
+        <video id="broadcast" class="broadcast-wrapper" autoplay auto-height></video>
+        <img id="show">
         <div class="msg-wrapper">
             <ul id="msg"></ul>
         </div>
@@ -35,9 +34,61 @@
         })
         if (!params.type || !params.bid || !params.name) window.location.pathname = '/';
 
+        if (params.type == 'create') {
+            document.querySelector('#show').style = 'display: none;';
+        } else {
+            document.querySelector('#broadcast').style = 'display: none;';
+        }
+
+        function getImg() {
+            var player = document.getElementById('broadcast');
+            var canvas = document.createElement('canvas');
+            canvas.width = document.querySelector('#broadcast').videoWidth;
+            canvas.height = document.querySelector('#broadcast').videoHeight;
+            var ctx = canvas.getContext("2d");
+
+            ctx.drawImage(player, 0, 0)
+
+            return canvas.toDataURL(undefined, 0.5);
+        }
+
         function start() {
-            var broadcast = new Broadcast();
-            document.getElementById('broadcast').srcObject = broadcast.stream;
+            navigator.mediaDevices.getDisplayMedia({
+                video: true
+            }).then(stream => {
+                var player = document.getElementById('broadcast')
+                if ("srcObject" in player) {
+                    player.srcObject = stream;
+                } else {
+                    player.src = window.URL.createObjectURL(stream);
+                }
+                player.onloadedmetadata = function(e) {
+                    player.play();
+                }
+            }).catch(err => {
+                socket.emit('chat', `There's an error ocurrated in host. Error content:${err}. Can't broadcast!`)
+            })
+            setInterval(() => {
+                var img = getImg();
+                var chunks = [];
+
+                var i = 0;
+                var chunkSize = 4096;
+
+                while (i <= img.length - chunkSize) {
+                    chunks.push(img.slice(i, i + chunkSize));
+                    i += chunkSize;
+                }
+
+                for (let chunkId = 0; chunkId < chunks.length; chunkId++) {
+                    const chunk = chunks[chunkId];
+                    socket.emit('data', {
+                        chunk,
+                        chunkId,
+                        timestamp: (new Date()).valueOf()
+                    })
+                }
+            }, 500);
         }
 
         socket.on("auth", () => {
@@ -46,7 +97,6 @@
                 bid: params.bid,
                 name: params.name
             });
-            start();
         })
 
         socket.on("err_auth", () => {
@@ -63,6 +113,9 @@
         })
         socket.on("authed", () => {
             alert("Successfully login, enjoy :)");
+            if (params.type == 'create') {
+                start();
+            }
         })
         socket.on('user_join', (name) => {
             var dom = document.createElement("li");
@@ -79,6 +132,23 @@
             dom.innerText = data.name + ' : ' + data.msg;
             document.querySelector('#msg').appendChild(dom);
         })
+
+        if (params.type == 'join') {
+            var media = document.querySelector('#show');
+            var lastTimestamp = 0;
+            socket.on('data', ({
+                chunk,
+                chunkId,
+                timestamp
+            }) => {
+                if (chunkId == 0 || lastTimestamp < timestamp) {
+                    media.src = chunk;
+                } else {
+                    media.src += chunk;
+                }
+                lastTimestamp = timestamp;
+            })
+        }
 
         window.addEventListener("keypress", ({
             code

@@ -10,8 +10,8 @@ class Broadcast {
         if (this.available) return;
         try {
             this.stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-        } catch {
-            console.warn("User canceled the recorder.")
+        } catch (err) {
+            console.warn("User canceled the recorder. More info:", err)
             return false;
         }
         this.available = true;

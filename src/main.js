@@ -55,6 +55,7 @@ io.on('connection', (socket) => {
             socket.to(payload.bid).emit('data', data);
         });
         socket.on('chat', (msg) => {
+            console.log(chalk.grey(`[chat][Room ${payload.bid}]<${payload.name}> ${msg}`));
             socket.to(payload.bid).emit('message', { msg, name: payload.name });
         });
         socket.on('ping', () => {
